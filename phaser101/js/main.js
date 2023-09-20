@@ -1,12 +1,31 @@
+var gamePrefs =
+{
+    SHIP_SPEED: 1,
+    BULLET_SPEED: -100
+}
+
 var config = 
 {
     type: Phaser.AUTO,
-    width: 370,
-    height: 550,
-    scene:[linkLevel], //array con las escenas
+    width: 256,
+    height: 512,
+    scene:[gameState], //array con las escenas
     render:
     {
         pixelArt : true
+    },
+    scale:
+    {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
+    physics:
+    {
+        default: "arcade",
+        arcade:
+        {
+            gravity:{y: 0}
+        }
     }
 };
 
