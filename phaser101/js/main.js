@@ -1,7 +1,9 @@
 var gamePrefs =
 {
     SHIP_SPEED: 1,
-    BULLET_SPEED: -100
+    BULLET_SPEED: -100,
+    ENEMY_SPEED: 20,
+    MAX_ENEMIES: -1
 }
 
 var config = 
@@ -9,7 +11,7 @@ var config =
     type: Phaser.AUTO,
     width: 256,
     height: 512,
-    scene:[gameState], //array con las escenas
+    scene:[GameState], //array con las escenas
     render:
     {
         pixelArt : true

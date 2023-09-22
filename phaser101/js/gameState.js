@@ -1,8 +1,8 @@
-class gameState extends Phaser.Scene
+class GameState extends Phaser.Scene
 {
     constructor()
     {
-        super({key:"gameState"});
+        super({key:"GameState"});
     }
 
     //Carga assets en memoria        
@@ -13,6 +13,7 @@ class gameState extends Phaser.Scene
         this.load.image("backgroundFront", "assets/img/background_frontal.png");
         this.load.spritesheet("ship", "assets/img/shipAnim.png", {frameWidth: 16, frameHeight: 24});
         this.load.image("bullet", "assets/img/spr_bullet_0.png");
+        this.load.spritesheet("enemy", "assets/img/enemy-medium.png", {frameWidth: 32, frameHeight: 16});
     }
 
     //Pinta assets en pantalla
@@ -20,19 +21,57 @@ class gameState extends Phaser.Scene
     {
         this.backgroundBack = this.add.tileSprite(0, 0, config.width, config.height, "backgroundBack").setOrigin(0);
         this.backgroundFront = this.add.tileSprite(0, 0, config.width, config.height, "backgroundFront").setOrigin(0);
-        this.ship = this.physics.add.sprite(config.width / 2, config.height / 2, "ship");        
+        this.ship = this.physics.add.sprite(config.width / 2, config.height * .95, "ship");        
         this.ship.body.collideWorldBounds = true;
 
-        this.loadAnimations();
-        this.LoadPools()
-        this.arrowKeys = this.input.keyboard.createCursorKeys();
+        this.LoadPools();
 
-        this.physics.add.sprite(this.ship.x, this.ship.y.top, "bullet");
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.cursors.space.on
+        (
+            "down", 
+            function()
+            {
+                this.CreateBullet();
+            },
+            this
+        );
+
+        this.enemyTimer = this.time.addEvent
+        (
+            {
+                delay: 2000,
+                callback: this.CreateEnemies,
+                callbackScope: this,
+                loop: true
+            }
+        );
+
+        this.LoadAnimations();        
     }
 
     LoadPools()
     {
         this.bulletPool = this.physics.add.group();
+        this.enemyPool = this.physics.add.group();
+    }
+
+    CreateEnemies()
+    {
+        var enemy = this.enemyPool.getFirst(false);
+
+        if(!enemy)
+        {
+            enemy = new EnemyPrefab(this, Phaser.Math.Between(16, config.width - 16), -8, "enemy");
+            this.enemyPool.add(enemy);
+        }
+        else
+        {
+            enemy.body.reset(Phaser.Math.Between(16, config.width - 16), -8);
+            enemy.active = true;
+        }   
+
+        enemy.body.setVelocityY(gamePrefs.ENEMY_SPEED);
     }
 
     CreateBullet()
@@ -40,13 +79,16 @@ class gameState extends Phaser.Scene
         var bullet = this.bulletPool.getFirst(false);
         if(!bullet)
         {
-
+            bullet = new BulletPrefab(this, this.ship.x, this.ship.body.top, "bullet");
+            this.bulletPool.add(bullet);
         }
         else
         {
-
+            bullet.body.reset(this.ship.x, this.ship.body.top);
+            bullet.active = true;
         }
-        
+
+        bullet.body.setVelocityY(gamePrefs.BULLET_SPEED);        
     }
 
     LoadAnimations()
@@ -54,8 +96,7 @@ class gameState extends Phaser.Scene
         this.anims.create(
             {
                 key: "idle",
-                frames: this.anims.generateFrameNumbers("ship", 
-                {start:0, end:1}),
+                frames: this.anims.generateFrameNumbers("ship", {start:0, end:1}),
                 frameRate: 10,
                 repeat: -1
             }
@@ -63,9 +104,8 @@ class gameState extends Phaser.Scene
 
         this.anims.create(
             {
-                key: "gofast",
-                frames: this.anims.generateFrameNumbers("ship", 
-                {start:0, end:1}),
+                key: "goFast",
+                frames: this.anims.generateFrameNumbers("ship", {start: 0, end: 1}),
                 frameRate: 20,
                 repeat: -1
             }
@@ -74,8 +114,7 @@ class gameState extends Phaser.Scene
         this.anims.create(
             {
                 key: "slowDown",
-                frames: this.anims.generateFrameNumbers("ship", 
-                {start:0, end:1}),
+                frames: this.anims.generateFrameNumbers("ship", {start: 0, end: 1}),
                 frameRate: 5,
                 repeat: -1
             }
@@ -84,8 +123,7 @@ class gameState extends Phaser.Scene
         this.anims.create(
             {
                 key: "moveLeft",
-                frames: this.anims.generateFrameNumbers("ship", 
-                {start:2, end:3}),
+                frames: this.anims.generateFrameNumbers("ship", {start: 2, end: 3}),
                 frameRate: 10,
                 repeat: -1
             }
@@ -94,8 +132,16 @@ class gameState extends Phaser.Scene
         this.anims.create(
             {
                 key: "moveRight",
-                frames: this.anims.generateFrameNumbers("ship", 
-                {start:4, end:5}),
+                frames: this.anims.generateFrameNumbers("ship", {start: 4, end: 5}),
+                frameRate: 10,
+                repeat: -1
+            }
+        )
+
+        this.anims.create(
+            {
+                key: "enemyIdle",
+                frames: this.anims.generateFrameNames("enemy", {start: 0, end: 1}),
                 frameRate: 10,
                 repeat: -1
             }
@@ -124,24 +170,25 @@ class gameState extends Phaser.Scene
 
         this.ship.body.velocity.x += this.movementX;
         this.ship.body.velocity.y += this.movementY;
+
     }
 
     InputMovement(){
 
-        if(this.arrowKeys.right.isDown)
+        if(this.cursors.right.isDown)
         {
             this.movementX += gamePrefs.SHIP_SPEED;            
         }
-        if(this.arrowKeys.left.isDown)
+        if(this.cursors.left.isDown)
         {
             this.movementX -= gamePrefs.SHIP_SPEED;            
         }
 
-        if(this.arrowKeys.up.isDown)
+        if(this.cursors.up.isDown)
         {
             this.movementY -= gamePrefs.SHIP_SPEED;            
         }
-        if(this.arrowKeys.down.isDown)
+        if(this.cursors.down.isDown)
         {
             this.movementY += gamePrefs.SHIP_SPEED;            
         }  
