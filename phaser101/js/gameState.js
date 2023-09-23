@@ -11,20 +11,23 @@ class GameState extends Phaser.Scene
         this.cameras.main.setBackgroundColor("003");
         this.load.image("backgroundBack", "assets/img/background_back.png");
         this.load.image("backgroundFront", "assets/img/background_frontal.png");
-        this.load.spritesheet("ship", "assets/img/shipAnim.png", {frameWidth: 16, frameHeight: 24});
+        this.load.spritesheet("player", "assets/img/shipAnim.png", {frameWidth: 16, frameHeight: 24});
         this.load.image("bullet", "assets/img/spr_bullet_0.png");
         this.load.spritesheet("enemy", "assets/img/enemy-medium.png", {frameWidth: 32, frameHeight: 16});
+        this.load.spritesheet("shield", "assets/img/spr_armor.png", {frameWidth: 66, frameHeight: 28});
     }
 
     //Pinta assets en pantalla
     create()
     {
+        this.LoadPools();
+
         this.backgroundBack = this.add.tileSprite(0, 0, config.width, config.height, "backgroundBack").setOrigin(0);
         this.backgroundFront = this.add.tileSprite(0, 0, config.width, config.height, "backgroundFront").setOrigin(0);
-        this.ship = this.physics.add.sprite(config.width / 2, config.height * .95, "ship");        
-        this.ship.body.collideWorldBounds = true;
-
-        this.LoadPools();
+        this.shield = this.add.sprite(35, 16, "shield").setFrame(4);
+        this.shield.depth = 1;
+        this.player = new PlayerPrefab(this, config.width / 2, config.height * .95, "player", this.shield, this.enemyPool);  
+        this.player.body.collideWorldBounds = true;
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.cursors.space.on
@@ -32,10 +35,12 @@ class GameState extends Phaser.Scene
             "down", 
             function()
             {
-                this.CreateBullet();
+                this.player.CreateBullet();
             },
             this
-        );
+        );        
+
+        //this.CreateEnemies();
 
         this.enemyTimer = this.time.addEvent
         (
@@ -47,12 +52,11 @@ class GameState extends Phaser.Scene
             }
         );
 
-        this.LoadAnimations();        
+        this.LoadAnimations();     
     }
 
     LoadPools()
     {
-        this.bulletPool = this.physics.add.group();
         this.enemyPool = this.physics.add.group();
     }
 
@@ -62,33 +66,20 @@ class GameState extends Phaser.Scene
 
         if(!enemy)
         {
-            enemy = new EnemyPrefab(this, Phaser.Math.Between(16, config.width - 16), -8, "enemy");
+            console.log("create");
+            enemy = new EnemyPrefab(this, Phaser.Math.Between(16, config.width - 16), -8, "enemy", this.player);
             this.enemyPool.add(enemy);
         }
         else
         {
+            console.log("reset");
             enemy.body.reset(Phaser.Math.Between(16, config.width - 16), -8);
+            enemy.body.enable = true;
+            enemy.visible = true;
             enemy.active = true;
         }   
 
         enemy.body.setVelocityY(gamePrefs.ENEMY_SPEED);
-    }
-
-    CreateBullet()
-    {
-        var bullet = this.bulletPool.getFirst(false);
-        if(!bullet)
-        {
-            bullet = new BulletPrefab(this, this.ship.x, this.ship.body.top, "bullet");
-            this.bulletPool.add(bullet);
-        }
-        else
-        {
-            bullet.body.reset(this.ship.x, this.ship.body.top);
-            bullet.active = true;
-        }
-
-        bullet.body.setVelocityY(gamePrefs.BULLET_SPEED);        
     }
 
     LoadAnimations()
@@ -96,7 +87,7 @@ class GameState extends Phaser.Scene
         this.anims.create(
             {
                 key: "idle",
-                frames: this.anims.generateFrameNumbers("ship", {start:0, end:1}),
+                frames: this.anims.generateFrameNumbers("player", {start:0, end:1}),
                 frameRate: 10,
                 repeat: -1
             }
@@ -105,7 +96,7 @@ class GameState extends Phaser.Scene
         this.anims.create(
             {
                 key: "goFast",
-                frames: this.anims.generateFrameNumbers("ship", {start: 0, end: 1}),
+                frames: this.anims.generateFrameNumbers("player", {start: 0, end: 1}),
                 frameRate: 20,
                 repeat: -1
             }
@@ -114,7 +105,7 @@ class GameState extends Phaser.Scene
         this.anims.create(
             {
                 key: "slowDown",
-                frames: this.anims.generateFrameNumbers("ship", {start: 0, end: 1}),
+                frames: this.anims.generateFrameNumbers("player", {start: 0, end: 1}),
                 frameRate: 5,
                 repeat: -1
             }
@@ -123,7 +114,7 @@ class GameState extends Phaser.Scene
         this.anims.create(
             {
                 key: "moveLeft",
-                frames: this.anims.generateFrameNumbers("ship", {start: 2, end: 3}),
+                frames: this.anims.generateFrameNumbers("player", {start: 2, end: 3}),
                 frameRate: 10,
                 repeat: -1
             }
@@ -132,7 +123,7 @@ class GameState extends Phaser.Scene
         this.anims.create(
             {
                 key: "moveRight",
-                frames: this.anims.generateFrameNumbers("ship", {start: 4, end: 5}),
+                frames: this.anims.generateFrameNumbers("player", {start: 4, end: 5}),
                 frameRate: 10,
                 repeat: -1
             }
@@ -159,8 +150,6 @@ class GameState extends Phaser.Scene
         
         this.InputMovement();
 
-        this.PlayAnimations();
-
         if(this.movementX != 0 && this.movementY != 0){
             var velocity = Math.sqrt(Math.pow(this.movementX, 2) + Math.pow(this.movementY, 2));
 
@@ -168,8 +157,10 @@ class GameState extends Phaser.Scene
             this.movementY /= velocity;            
         }  
 
-        this.ship.body.velocity.x += this.movementX;
-        this.ship.body.velocity.y += this.movementY;
+        this.player.body.velocity.x += this.movementX;
+        this.player.body.velocity.y += this.movementY;      
+
+        this.player.PlayAnimations(this.movementX, this.movementY);
 
     }
 
@@ -186,7 +177,7 @@ class GameState extends Phaser.Scene
 
         if(this.cursors.up.isDown)
         {
-            this.movementY -= gamePrefs.SHIP_SPEED;            
+            this.movementY -= gamePrefs.SHIP_SPEED;    
         }
         if(this.cursors.down.isDown)
         {
@@ -195,33 +186,8 @@ class GameState extends Phaser.Scene
 
     }
 
-    PlayAnimations(){
-
-        if(this.movementX != 0)
-        {
-            if(this.movementX > 0)
-            {
-                this.ship.anims.play("moveRight", true);
-            }
-            else
-            {
-                this.ship.anims.play("moveLeft", true);
-            }
-        }
-        else if(this.movementY != 0)
-        {
-            if(this.movementY > 0)
-            {
-                this.ship.anims.play("slowDown", true);
-            }
-            else
-            {
-                this.ship.anims.play("goFast", true);
-            }
-        }
-        else if(this.movementX == 0 && this.movementY == 0)
-        {
-            this.ship.anims.play("idle", true);
-        }  
+    Restart()
+    {
+        this.scene.restart();
     }
 }
