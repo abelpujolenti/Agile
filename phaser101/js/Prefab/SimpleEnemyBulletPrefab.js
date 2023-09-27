@@ -6,9 +6,5 @@ class SimpleEnemyBulletPrefab extends Bullet
         {            
             this.Deactivate();
         }
-        else if(!this.CheckCollision())
-        {            
-            this.Deactivate();
-        }
     }
 }

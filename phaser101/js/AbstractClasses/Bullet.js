@@ -4,21 +4,19 @@ class Bullet extends Phaser.GameObjects.Image
     {
         super(scene, positionX, positionY, spriteTag);
         scene.add.existing(this);
-        this._target = target;     
         
-        scene.physics.add.overlap(this, target, target.TakeDamage, null, scene);        
+        scene.physics.add.overlap(this, target, this.InflictDamage, null, target);        
     }
 
     Deactivate()
-    {
+    {     
         this.visible = false;
         this.active = false;
     }
 
-    CheckCollision()
-    {                
-        return this.body.touching.none;
+    InflictDamage(bullet, target)
+    {
+        bullet.Deactivate();
+        target.TakeDamage();
     }
-
-    TakeDamage(){}
 }

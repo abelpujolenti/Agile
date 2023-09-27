@@ -60,6 +60,7 @@ class EnemyPrefab extends Ship
 
     TakeDamage(bullet)
     {        
+        console.log("hit enemy")
         this._health--;
         console.log(this._health)
         if(this._health <= 0)

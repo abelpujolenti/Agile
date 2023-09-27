@@ -31,6 +31,7 @@ class PlayerPrefab extends Ship
 
     TakeDamage(bullet)
     {
+        console.log("hit player")
         this._health--;
         if(this._health == 0)
         {
