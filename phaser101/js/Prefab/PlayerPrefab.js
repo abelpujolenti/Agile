@@ -29,7 +29,7 @@ class PlayerPrefab extends Ship
         bullet.body.setVelocityY(gamePrefs.BULLET_SPEED);      
     }
 
-    TakeDamage()
+    TakeDamage(bullet)
     {
         this._health--;
         if(this._health == 0)

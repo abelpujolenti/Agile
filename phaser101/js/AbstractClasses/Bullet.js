@@ -6,7 +6,7 @@ class Bullet extends Phaser.GameObjects.Image
         scene.add.existing(this);
         this._target = target;     
         
-        scene.physics.add.overlap(this, target);
+        scene.physics.add.overlap(this, target, target.TakeDamage, null, scene);        
     }
 
     Deactivate()
@@ -17,6 +17,8 @@ class Bullet extends Phaser.GameObjects.Image
 
     CheckCollision()
     {                
-        return this.body.touching.none;        
+        return this.body.touching.none;
     }
+
+    TakeDamage(){}
 }

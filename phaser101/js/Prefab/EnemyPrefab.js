@@ -35,11 +35,16 @@ class EnemyPrefab extends Ship
 
     Shoot()
     {
+        if(!this.active)
+        {
+            return;
+        }
+
         var bullet = this.bulletPool.getFirst(false);
 
         if(!bullet)
         {
-            bullet = new SimpleEnemyBulletPrefab(this._scene, this.x, this.body.bottom, "bullet", this._player);
+            bullet = new SimpleEnemyBulletPrefab(this._scene, this.x, this.body.bottom, "enemyBullet", this._player);
             this.bulletPool.add(bullet);
         }
         else
@@ -53,7 +58,7 @@ class EnemyPrefab extends Ship
 
     }
 
-    TakeDamage()
+    TakeDamage(bullet)
     {        
         this._health--;
         console.log(this._health)

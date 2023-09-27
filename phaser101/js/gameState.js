@@ -5,19 +5,20 @@ class GameState extends Phaser.Scene
         super({key:"GameState"});
     }
 
-    //Carga assets en memoria        
+       
     preload()
     {
         this.cameras.main.setBackgroundColor("003");
         this.load.image("backgroundBack", "assets/img/background_back.png");
         this.load.image("backgroundFront", "assets/img/background_frontal.png");
-        this.load.spritesheet("player", "assets/img/shipAnim.png", {frameWidth: 16, frameHeight: 24});
         this.load.image("bullet", "assets/img/spr_bullet_0.png");
-        this.load.spritesheet("enemy", "assets/img/enemy-medium.png", {frameWidth: 32, frameHeight: 16});
+        this.load.image("enemyBullet", "assets/img/spr_enemy_bullet_0.png");
+        this.load.spritesheet("player", "assets/img/shipAnim.png", {frameWidth: 16, frameHeight: 24});
         this.load.spritesheet("shield", "assets/img/spr_armor.png", {frameWidth: 66, frameHeight: 28});
+        this.load.spritesheet("enemy", "assets/img/enemy-medium.png", {frameWidth: 32, frameHeight: 16});
     }
 
-    //Pinta assets en pantalla
+    
     create()
     {
         this.LoadPools();
@@ -39,8 +40,6 @@ class GameState extends Phaser.Scene
             },
             this
         );        
-
-        //this.CreateEnemies();
 
         this.enemyTimer = this.time.addEvent
         (
@@ -66,13 +65,11 @@ class GameState extends Phaser.Scene
 
         if(!enemy)
         {
-            console.log("create");
             enemy = new EnemyPrefab(this, Phaser.Math.Between(16, config.width - 16), -8, "enemy", this.player);
             this.enemyPool.add(enemy);
         }
         else
         {
-            console.log("reset");
             enemy.body.reset(Phaser.Math.Between(16, config.width - 16), -8);
             enemy.body.enable = true;
             enemy.visible = true;
@@ -139,7 +136,7 @@ class GameState extends Phaser.Scene
         )
     }
 
-    //Actualiza whatever       
+    
     update()
     {
         this.backgroundBack .tilePositionY -= .25;

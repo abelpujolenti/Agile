@@ -8,12 +8,7 @@ class PlayerBulletPrefab extends Bullet
         }
         else if(!this.CheckCollision())
         {            
-            this._target.getChildren().forEach(element => {
-                //console.log(element)
-                
-                element.TakeDamage();
-                this.Deactivate();
-            });
+            this.Deactivate();
         }
     }
 }
