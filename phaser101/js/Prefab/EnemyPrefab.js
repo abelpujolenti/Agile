@@ -49,9 +49,8 @@ class EnemyPrefab extends Ship
         }
         else
         {
+            bullet.Activate();
             bullet.body.reset(this.x, this.body.bottom);
-            bullet.visible = true;
-            bullet.active = true;
         }
 
         bullet.body.setVelocityY(-gamePrefs.BULLET_SPEED);        
@@ -60,9 +59,7 @@ class EnemyPrefab extends Ship
 
     TakeDamage(bullet)
     {        
-        console.log("hit enemy")
         this._health--;
-        console.log(this._health)
         if(this._health <= 0)
         {
             this.body.enable = false;

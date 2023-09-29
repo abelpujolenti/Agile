@@ -21,9 +21,8 @@ class PlayerPrefab extends Ship
         }
         else
         {
+            bullet.Activate();
             bullet.body.reset(this.x, this.body.top);
-            bullet.visible = true;
-            bullet.active = true;
         }
 
         bullet.body.setVelocityY(gamePrefs.BULLET_SPEED);      
@@ -31,7 +30,6 @@ class PlayerPrefab extends Ship
 
     TakeDamage(bullet)
     {
-        console.log("hit player")
         this._health--;
         if(this._health == 0)
         {
