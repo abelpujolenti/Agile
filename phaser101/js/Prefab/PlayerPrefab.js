@@ -1,23 +1,28 @@
 class PlayerPrefab extends Ship
 {
-    constructor(scene, positionX, positionY, spriteTag = "ship", shield, enemyPool)
+    constructor(scene, positionX, positionY, spriteTag = "ship", shield, enemyPool, playerShoot, playerHit, explode, powerUpSound)
     {
-        super(scene, positionX, positionY, spriteTag);
+        super(scene, positionX, positionY, spriteTag, explode);
         scene.add.existing(this);
         this._scene = scene;
         this._shield = shield;
-        this._health = 5;
-        this.shipBulletPool = scene.physics.add.group();
+        this._maxHealth = 5;
+        this._health = this._maxHealth;
+        this._shipBulletPool = scene.physics.add.group();
         this._enemyPool = enemyPool;
+        this._playerShoot = playerShoot;
+        this._playerHit = playerHit;
+        this._powerUpSound = powerUpSound;
+
     }
 
     CreateBullet()
     {
-        var bullet = this.shipBulletPool.getFirst(false);
+        var bullet = this._shipBulletPool.getFirst(false);
         if(!bullet)
         {
             bullet = new PlayerBulletPrefab(this._scene, this.x, this.body.top, "bullet", this._enemyPool);
-            this.shipBulletPool.add(bullet);
+            this._shipBulletPool.add(bullet);
         }
         else
         {
@@ -25,17 +30,42 @@ class PlayerPrefab extends Ship
             bullet.body.reset(this.x, this.body.top);
         }
 
+        this._playerShoot.play();
         bullet.body.setVelocityY(gamePrefs.BULLET_SPEED);      
     }
 
-    TakeDamage(bullet)
+    TakePowerup(powerupNumber)
+    {
+        if(powerupNumber == 1)
+        {            
+            var delayShoot = 200
+            this.autoShootTimer = this._scene.time.addEvent
+            (
+                {
+                    delay: delayShoot,
+                    callback: this.CreateBullet,
+                    callbackScope: this,
+                    repeat: 10000 / delayShoot
+                }
+            );
+        }
+        else if(powerupNumber == 2)
+        {
+            this._health = this._maxHealth;
+            this._shield.setFrame(this._health - 1);
+        }
+    }
+
+    TakeDamage()
     {
         this._health--;
         if(this._health == 0)
         {
+            this._explode.play();
             this._scene.Restart();
             return;
         }
+        this._playerHit.play();
         this._shield.setFrame(this._health - 1);
     }
 
