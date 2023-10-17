@@ -40,7 +40,7 @@ class GameState extends Phaser.Scene
         this.shield = this.add.sprite(35, 16, "shield").setFrame(4);
         this.shield.depth = 1;
 
-        this.score = this.add.sprite(config.width - 5, 5, "score").setOrigin(1, 0).setDepth(1);
+        this.score = this.add.image(config.width - 5, 5, "score").setOrigin(1, 0).setDepth(1);
         this.score = 0;
         this.scoreText = this.add.text
         (
@@ -48,8 +48,8 @@ class GameState extends Phaser.Scene
             33, 
             this.score,
                 {
-                    fontFamily: "Arial", 
-                    fill: "#FFFFFF", 
+                    fontFamily: "Arial",
+                    fill: "#FFFFFF",
                     fontSize: 24
                 }
         ).setOrigin(1).setDepth(1);
@@ -201,7 +201,6 @@ class GameState extends Phaser.Scene
             }
         )
     }
-
     
     update()
     {
