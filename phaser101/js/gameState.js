@@ -13,6 +13,7 @@ class GameState extends Phaser.Scene
         this.load.image("backgroundFront", "assets/img/background_frontal.png");
         this.load.image("bullet", "assets/img/spr_bullet_0.png");
         this.load.image("enemyBullet", "assets/img/spr_enemy_bullet_0.png");
+        this.load.image("score", "assets/img/spr_score_0.png");
         this.load.spritesheet("player", "assets/img/shipAnim.png", {frameWidth: 16, frameHeight: 24});
         this.load.spritesheet("shield", "assets/img/spr_armor.png", {frameWidth: 66, frameHeight: 28});
         this.load.spritesheet("enemy", "assets/img/enemy-medium.png", {frameWidth: 32, frameHeight: 16});
@@ -35,15 +36,37 @@ class GameState extends Phaser.Scene
 
         this.backgroundBack = this.add.tileSprite(0, 0, config.width, config.height, "backgroundBack").setOrigin(0);
         this.backgroundFront = this.add.tileSprite(0, 0, config.width, config.height, "backgroundFront").setOrigin(0);
+        
         this.shield = this.add.sprite(35, 16, "shield").setFrame(4);
         this.shield.depth = 1;
+
+        this.score = this.add.sprite(config.width - 5, 5, "score").setOrigin(1, 0).setDepth(1);
+        this.score = 0;
+        this.scoreText = this.add.text
+        (
+            config.width - 8, 
+            33, 
+            this.score,
+                {
+                    fontFamily: "Arial", 
+                    fill: "#FFFFFF", 
+                    fontSize: 24
+                }
+        ).setOrigin(1).setDepth(1);
+
         this.playerShoot = this.sound.add("playerShoot");
+        
         this.playerHit = this.sound.add("playerHit");
+        
         this.powerUpSound = this.sound.add("pickPowerUp");
+        
         this.enemyShoot = this.sound.add("enemyShoot");
+        
         this.enemyHit = this.sound.add("enemyHit");
+        
         this.explode = this.sound.add("explode");
-        this.player = new PlayerPrefab(this, config.width / 2, config.height * .95, "player", this.shield, this.enemyPool, this.playerShoot, this.playerHit, this.explode, this.powerUpSound);  
+        
+        this.player = new PlayerPrefab(this, config.width / 2, config.height * .95, this.shield, this.enemyPool, this.playerShoot, this.playerHit, this.explode, this.powerUpSound);  
         this.player.body.collideWorldBounds = true;
 
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -82,7 +105,7 @@ class GameState extends Phaser.Scene
 
         if(!enemy)
         {
-            enemy = new EnemyPrefab(this, Phaser.Math.Between(16, config.width - 16), -8, "enemy", this.player, this.enemyShoot, this.enemyHit, this.explode);
+            enemy = new EnemyPrefab(this, Phaser.Math.Between(16, config.width - 16), -8, this.player, this.enemyShoot, this.enemyHit, this.explode, this.scoreText);
             this.enemyPool.add(enemy);
         }
         else
@@ -164,7 +187,7 @@ class GameState extends Phaser.Scene
             {
                 key: "powerUp1",
                 frames: this.anims.generateFrameNumbers("powerUp1", {start: 0, end: 1}),
-                frameRate: 10,
+                frameRate: 5,
                 repeat: -1
             }
         )
@@ -173,7 +196,7 @@ class GameState extends Phaser.Scene
             {
                 key: "powerUp2",
                 frames: this.anims.generateFrameNumbers("powerUp2", {start: 0, end: 1}),
-                frameRate: 10,
+                frameRate: 5,
                 repeat: -1
             }
         )

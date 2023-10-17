@@ -12,15 +12,15 @@ class PowerUp extends Phaser.GameObjects.Sprite
 
         var powerUp = "powerUp" + (this._powerUpNumber + "");
         this.anims.play(powerUp);
-        this.Activate();       
     }
 
-    preUpdate()
+    preUpdate(time, delta)
     {
         if(this.y >= config.height)
-        {            
+        {
             this.Deactivate();
         }
+        super.preUpdate(time, delta)
     }
 
     Activate()
@@ -45,6 +45,6 @@ class PowerUp extends Phaser.GameObjects.Sprite
 
     GetPowerUpNumber()
     {
-        return powerUpNumber;
+        return this._powerUpNumber;
     }
 }

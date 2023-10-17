@@ -1,8 +1,8 @@
 class PlayerPrefab extends Ship
 {
-    constructor(scene, positionX, positionY, spriteTag = "ship", shield, enemyPool, playerShoot, playerHit, explode, powerUpSound)
+    constructor(scene, positionX, positionY, shield, enemyPool, playerShoot, playerHit, explode, powerUpSound)
     {
-        super(scene, positionX, positionY, spriteTag, explode);
+        super(scene, positionX, positionY, explode);
         scene.add.existing(this);
         this._scene = scene;
         this._shield = shield;

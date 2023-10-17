@@ -1,8 +1,8 @@
 class EnemyPrefab extends Ship
 {
-    constructor(scene, positionX, positionY, spriteTag = "enemy", player, enemyShoot, enemyHit, explode)
+    constructor(scene, positionX, positionY, player, enemyShoot, enemyHit, explode, scoreText)
     {
-        super(scene, positionX, positionY, spriteTag, explode);
+        super(scene, positionX, positionY, explode);
         scene.add.existing(this);
         this.anims.play("enemyIdle");
         this._health = 2;
@@ -11,9 +11,9 @@ class EnemyPrefab extends Ship
         this._player = player;
         this._enemyShoot = enemyShoot;
         this._enemyHit = enemyHit;
+        this._scoreText =  scoreText;
 
         this._powerUpPool = scene.physics.add.group();
-
         this.bulletPool = this._scene.physics.add.group();
         this.shootTimer = this._scene.time.addEvent
         (
@@ -56,7 +56,7 @@ class EnemyPrefab extends Ship
         }
 
         this._enemyShoot.play();
-        bullet.body.setVelocityY(-gamePrefs.BULLET_SPEED);        
+        bullet.body.setVelocityY(-gamePrefs.BULLET_SPEED);    
 
     }
 
@@ -69,9 +69,10 @@ class EnemyPrefab extends Ship
             this.visible = false;
             this.active = false;
             this._health = 2;
+            this._scoreText.text = parseInt(this._scoreText.text) + 100;
             this._explode.play()
             //this.anims.play("explosion", true);
-            if(true/*Phaser.Math.Between(0, 9) == 1*/){     
+            if(Phaser.Math.Between(0, 9) == 1){     
                 this.CreatePowerUps(Phaser.Math.Between(1, 2), this.x, this.y);                
             }
             return;
@@ -83,16 +84,17 @@ class EnemyPrefab extends Ship
     {
         var powerUpAvailable = false;
 
-        var powerUp;        
+        var powerUp;
 
-        this._powerUpPool.getChildren().every(powerUp => {
-            if(!powerUp.active && powerUp.GetPowerUpNumber() != powerUpNumber)
+        this._powerUpPool.getChildren().every(currentPowerUp => {
+            if(!currentPowerUp.active && currentPowerUp.GetPowerUpNumber() != powerUpNumber)
             {
-                powerUp.body.reset(posX, posY);
-                powerUp.body.enable = true;
-                powerUp.visible = true;
-                powerUp.active = true;
+                currentPowerUp.body.reset(posX, posY);
+                currentPowerUp.body.enable = true;
+                currentPowerUp.visible = true;
+                currentPowerUp.active = true;
                 powerUpAvailable = true;
+                powerUp = currentPowerUp;
                 return false;
             }
             return true;
@@ -101,7 +103,7 @@ class EnemyPrefab extends Ship
         if(!powerUpAvailable)
         {
             powerUp = new PowerUp(this._scene, posX, posY, this._player, powerUpNumber);
-            this._powerUpPool.add(powerUp);            
+            this._powerUpPool.add(powerUp);
         }  
 
         powerUp.body.setVelocityY(gamePrefs.ENEMY_SPEED);
