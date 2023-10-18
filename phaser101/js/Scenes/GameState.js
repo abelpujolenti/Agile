@@ -5,6 +5,11 @@ class GameState extends Phaser.Scene
         super({key:"GameState"});
     }
 
+    init (data)
+    {
+        this.backgroundBackTilePosition = data.backgroundBack;
+        this.backgroundFrontTilePosition = data.backgroundFront;
+    }
        
     preload()
     {
@@ -25,8 +30,7 @@ class GameState extends Phaser.Scene
         this.load.audio("pickPowerUp", "assets/sounds/snd_powerup.wav");
         this.load.audio("enemyShoot", "assets/sounds/snd_enemy_laser.wav");
         this.load.audio("enemyHit", "assets/sounds/snd_hit.wav");
-        this.load.audio("explode", "assets/sounds/snd_explode.wav");
-        
+        this.load.audio("explode", "assets/sounds/snd_explode.wav");        
     }
 
     
@@ -35,7 +39,10 @@ class GameState extends Phaser.Scene
         this.LoadPools();
 
         this.backgroundBack = this.add.tileSprite(0, 0, config.width, config.height, "backgroundBack").setOrigin(0);
+        this.backgroundBack.tilePositionY = this.backgroundBackTilePosition;
+
         this.backgroundFront = this.add.tileSprite(0, 0, config.width, config.height, "backgroundFront").setOrigin(0);
+        this.backgroundFront.tilePositionY = this.backgroundFrontTilePosition;
         
         this.shield = this.add.sprite(35, 16, "shield").setFrame(4);
         this.shield.depth = 1;
@@ -204,7 +211,7 @@ class GameState extends Phaser.Scene
     
     update()
     {
-        this.backgroundBack .tilePositionY -= .25;
+        this.backgroundBack.tilePositionY -= .25;
         this.backgroundFront.tilePositionY --;
 
         this.movementX = 0;
@@ -248,8 +255,8 @@ class GameState extends Phaser.Scene
 
     }
 
-    Restart()
+    LoadGameOver()
     {
-        this.scene.restart();
+        this.scene.start("GameOver", {score: this.scoreText.text, backgroundBack: this.backgroundBack.tilePositionY, backgroundFront: this.backgroundFront.tilePositionY});
     }
 }

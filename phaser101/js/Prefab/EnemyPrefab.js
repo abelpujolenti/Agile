@@ -2,7 +2,7 @@ class EnemyPrefab extends Ship
 {
     constructor(scene, positionX, positionY, player, enemyShoot, enemyHit, explode, scoreText)
     {
-        super(scene, positionX, positionY, explode);
+        super(scene, positionX, positionY, "enemy", explode);
         scene.add.existing(this);
         this.anims.play("enemyIdle");
         this._health = 2;

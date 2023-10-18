@@ -2,7 +2,7 @@ class PlayerPrefab extends Ship
 {
     constructor(scene, positionX, positionY, shield, enemyPool, playerShoot, playerHit, explode, powerUpSound)
     {
-        super(scene, positionX, positionY, explode);
+        super(scene, positionX, positionY, "player", explode);
         scene.add.existing(this);
         this._scene = scene;
         this._shield = shield;
@@ -62,7 +62,7 @@ class PlayerPrefab extends Ship
         if(this._health == 0)
         {
             this._explode.play();
-            this._scene.Restart();
+            this._scene.LoadGameOver();
             return;
         }
         this._playerHit.play();
