@@ -20,8 +20,7 @@ class GameOver extends Phaser.Scene
         }
         var scoreID = "score" + localStorage.getItem("ScoreTableLength");
 
-        localStorage.setItem(scoreID, this.score)
-        //localStorage.clear()
+        localStorage.setItem(scoreID, this.score)        
         this.backgroundBackTilePosition = data.backgroundBack;
         this.backgroundFrontTilePosition = data.backgroundFront;
     }

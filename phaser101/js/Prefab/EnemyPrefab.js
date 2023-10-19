@@ -35,6 +35,15 @@ class EnemyPrefab extends Ship
         super.preUpdate(time, delta);
     }
 
+    Reset(posX)
+    {
+        this.setTexture("enemy");
+        this.body.reset(posX, -8);
+        this.body.enable = true;
+        this.visible = true;
+        this.active = true;
+    }
+
     Shoot()
     {
         if(!this.active)
@@ -51,7 +60,7 @@ class EnemyPrefab extends Ship
         }
         else
         {
-            bullet.Activate();
+            bullet.Activate("enemyBullet");
             bullet.body.reset(this.x, this.body.bottom);
         }
 
@@ -65,13 +74,15 @@ class EnemyPrefab extends Ship
         this._health--;
         if(this._health <= 0)
         {
-            this.body.enable = false;
-            this.visible = false;
-            this.active = false;
             this._health = 2;
-            this._scoreText.text = parseInt(this._scoreText.text) + 100;
+            this._scoreText.text = parseInt(this._scoreText.text) + 100;       
             this._explode.play()
-            //this.anims.play("explosion", true);
+            this.anims.play("explosion");
+            this.on("animationcomplete", function(){
+                this.body.enable = false;
+                this.visible = false;
+                this.active = false;
+            })
             if(Phaser.Math.Between(0, 9) == 1){     
                 this.CreatePowerUps(Phaser.Math.Between(1, 2), this.x, this.y);                
             }

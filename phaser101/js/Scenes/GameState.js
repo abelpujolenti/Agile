@@ -18,6 +18,7 @@ class GameState extends Phaser.Scene
         this.load.image("backgroundFront", "assets/img/background_frontal.png");
         this.load.image("bullet", "assets/img/spr_bullet_0.png");
         this.load.image("enemyBullet", "assets/img/spr_enemy_bullet_0.png");
+        this.load.image("flare", "assets/img/spr_flare_0.png");
         this.load.image("score", "assets/img/spr_score_0.png");
         this.load.spritesheet("player", "assets/img/shipAnim.png", {frameWidth: 16, frameHeight: 24});
         this.load.spritesheet("shield", "assets/img/spr_armor.png", {frameWidth: 66, frameHeight: 28});
@@ -117,10 +118,7 @@ class GameState extends Phaser.Scene
         }
         else
         {
-            enemy.body.reset(Phaser.Math.Between(16, config.width - 16), -8);
-            enemy.body.enable = true;
-            enemy.visible = true;
-            enemy.active = true;
+            enemy.Reset(Phaser.Math.Between(16, config.width - 16));
         }   
 
         enemy.body.setVelocityY(gamePrefs.ENEMY_SPEED);

@@ -26,7 +26,7 @@ class PlayerPrefab extends Ship
         }
         else
         {
-            bullet.Activate();
+            bullet.Activate("bullet");
             bullet.body.reset(this.x, this.body.top);
         }
 
