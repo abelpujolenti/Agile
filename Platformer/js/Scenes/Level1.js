@@ -35,7 +35,11 @@ class Level1 extends Phaser.Scene
         this.map.createLayer("moss_layer_up", "moss_tileset");
         this.map.createLayer("moss_layer_down", "moss_tileset");
 
-        this.player = this.add.sprite(65, 100, "player");
+        this.player = this.physics.add.sprite(65, 100, "player");
+
+        this.cameras.main.startFollow(this.player);
+        this.cameras.main.setBounds(0, 0, gamePrefs.LEVEL_1_WIDTH, gamePrefs.LEVEL_1_HEIGHT);
+        
     }
 
     LoadAnimations()

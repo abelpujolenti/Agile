@@ -31,7 +31,7 @@ var config =
         default: "arcade",
         arcade:
         {
-            gravity:{y: 0}
+            gravity:{y: gamePrefs.HERO_GRAVITY}
         }
     }
 };
