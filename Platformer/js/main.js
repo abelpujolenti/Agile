@@ -6,7 +6,8 @@ var gamePrefs =
     LEVEL_1_HEIGHT: 800, //25*32
     HERO_SPEED: 200,
     HERO_JUMP: 450,
-    HERO_GRAVITY: 1000
+    HERO_GRAVITY: 1000,
+    ENEMY_SPEED: 100
 }
 
 var config = 
@@ -31,7 +32,8 @@ var config =
         default: "arcade",
         arcade:
         {
-            gravity:{y: gamePrefs.HERO_GRAVITY}
+            gravity:{y: gamePrefs.HERO_GRAVITY},
+            debug: true
         }
     }
 };
