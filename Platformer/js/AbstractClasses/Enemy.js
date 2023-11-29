@@ -1,6 +1,6 @@
 class Enemy extends Phaser.GameObjects.Sprite
 {
-    constructor(scene, positionX, positionY, spriteTag, walls, player, animTag){
+    constructor(scene, positionX, positionY, spriteTag, walls, player, animTag, health){
         super(scene, positionX, positionY, spriteTag);
         
         this._scene = scene;
@@ -11,6 +11,8 @@ class Enemy extends Phaser.GameObjects.Sprite
         this.anims.play(animTag);
         
         this._direction = 1;
+
+        this._health = health;
 
         this.body.setVelocityX = gamePrefs.ENEMY_SPEED * this._direction;
 

@@ -1,7 +1,7 @@
 class Slime extends Enemy
 {
-    constructor(scene, positionX, positionY, walls, player, patrol){
-        super(scene, positionX, positionY, "slime", walls, player, "slime");
+    constructor(scene, positionX, positionY, walls, player, patrol, health){
+        super(scene, positionX, positionY, "slime", walls, player, "slime", health);
 
         this._patrol = patrol;
     }

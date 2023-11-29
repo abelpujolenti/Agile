@@ -7,7 +7,8 @@ var gamePrefs =
     HERO_SPEED: 200,
     HERO_JUMP: 450,
     HERO_GRAVITY: 1000,
-    ENEMY_SPEED: 100
+    ENEMY_SPEED: 100,
+    MAX_LIVES: 7
 }
 
 var config = 
@@ -15,7 +16,7 @@ var config =
     type: Phaser.AUTO,
     width: gamePrefs.GAME_WIDTH,
     height: gamePrefs.GAME_HEIGHT,
-    scene:[Level1], //array con las escenas
+    scene:[Preloader, Menu, Level1], //array con las escenas
     render:
     {
         pixelArt : true
@@ -25,6 +26,8 @@ var config =
         mode: Phaser.Scale.FIT,
         width: gamePrefs.GAME_WIDTH / 1.5,
         height: gamePrefs.GAME_HEIGHT / 1.5,
+        /*width: gamePrefs.GAME_WIDTH / 0.5,
+        height: gamePrefs.GAME_HEIGHT /0.5,*/
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
     physics:

@@ -10,6 +10,8 @@ class Player extends Phaser.GameObjects.Sprite
         
         this.cursors = this._scene.input.keyboard.createCursorKeys();
 
+        this._lives = gamePrefs.MAX_LIVES;
+
         this.SetPhysics(walls, door);
     }
 
@@ -17,11 +19,24 @@ class Player extends Phaser.GameObjects.Sprite
     {
         if(enemy.body.touching.up && this.body.touching.down)
         {
-            enemy.destroy();
+            enemy._health--;
+            if(enemy._health <= 0)            
+            {
+                enemy.destroy();
+            }
             this.body.setVelocityY(-gamePrefs.HERO_JUMP);
             return;
         }
 
+        this._lives--;
+
+        /*if(this._lives != 0)
+        {
+            this._scene.UpdateLives();
+            return;
+        }*/
+
+        this._scene.UpdateLives();
         this.body.reset(65, 100);
         this._scene.cameras.main.shake(250, 0.05);
         this._scene.cameras.main.flash(500, 255, 0, 0);
@@ -76,5 +91,10 @@ class Player extends Phaser.GameObjects.Sprite
         {
             this.anims.stop().setFrame(6);
         }
+    }
+
+    GetLives()
+    {
+        return this._lives;
     }
 }
