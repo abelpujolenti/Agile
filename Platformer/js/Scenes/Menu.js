@@ -59,20 +59,21 @@ class Menu extends Phaser.Scene
 
         this.load.on("complete", function()
         {
-            this.FinishLoad();
+            //this.FinishLoad();
         }, this);
+    }
+    
+    FinishLoad()
+    {
+        //this.player = this.add.sprite
+    }
 
-        FinishLoad()
-        {
-            //this.player = this.add.sprite
-        }
+    create()
+    {
+        this.LoadAnimations();
+    }
 
-        create()
-        {
-            this.LoadAnimations();
-        }
-
-        LoadAnimations()
+    LoadAnimations()
     {
         this.anims.create(
             {
@@ -109,6 +110,5 @@ class Menu extends Phaser.Scene
                 repeat: -1
             }
         )
-    }
     }
 }

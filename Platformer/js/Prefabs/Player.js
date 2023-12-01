@@ -10,6 +10,8 @@ class Player extends Phaser.GameObjects.Sprite
         
         this.cursors = this._scene.input.keyboard.createCursorKeys();
 
+        this.body.setSize(16, 16).setOffset();
+
         this._lives = gamePrefs.MAX_LIVES;
 
         this.SetPhysics(walls, door);
